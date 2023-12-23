@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-8 mt-16">
+    <div>
+        <div class="">
+            <div class="mx-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-xl font-bold">Contact</h3>
+                    <p>Have an account? <a href=""  class="underline">Login</a></p>
+                </div>
+
+                <div class="my-4">
+                    <input 
+                        type="email"
+                        class="w-full rounded-lg p-3 pe-12 text-sm shadow-sm outline-none border"
+                        placeholder="Enter email"
+                        required
+                    >
+                </div>
+
+                <div class="my-4">
+                    <input 
+                        type="tel"
+                        class="w-full rounded-lg p-3 pe-12 text-sm shadow-sm outline-none border"
+                        placeholder="Enter phone number"
+                        maxlength="10"
+                        required
+                    >
+                </div>
+
+                <div class="mt-10">
+                    <h3 class="text-xl font-bold">Delivery</h3>
+                    <div class="mt-2">
+                        <div>
+                            <label for="HeadlineAct" class="block text-sm font-medium text-gray-900 my-2">
+                              Country
+                            </label>
+                          
+                            <select
+                              name="HeadlineAct"
+                              id="HeadlineAct"
+                              class="w-full rounded-lg p-3 pe-12 text-sm shadow-sm outline-none border"
+                            >
+                              <option value="">India</option>
+                            </select>
+                        </div>
+
+                        <div class="mt-8 grid grid-cols-6 gap-6">
+                            <div class="col-span-6 sm:col-span-3">
+                                
+                                <input
+                                type="text"
+                                id="FirstName"
+                                name="first_name"
+                                placeholder="First name"
+                                class="w-full rounded-lg p-3 pe-12 text-sm shadow-sm outline-none border"
+                                />
+                            </div>
+                    
+                            <div class="col-span-6 sm:col-span-3">
+                    
+                                <input
+                                type="text"
+                                id="LastName"
+                                name="last_name"
+                                placeholder="Last name"
+                                class="w-full rounded-lg p-3 pe-12 text-sm shadow-sm outline-none border"
+                                />
+                            </div>
+                            
+                        </div>
+                        <div class="mt-8 grid grid-cols-6 gap-6">
+                            <div class="col-span-6 sm:col-span-2"> <!-- Adjusted col-span for each input -->
+                                <input
+                                    type="text"
+                                    id="city"
+                                    name="City"
+                                    placeholder="City/Town/Village"
+                                    class="w-full rounded-lg p-3 pe-12 text-sm shadow-sm outline-none border"
+                                />
+                            </div>
+                        
+                            <div class="col-span-6 sm:col-span-2"> <!-- Adjusted col-span for each input -->
+                                <select
+                                    name="HeadlineAct"
+                                    id="HeadlineAct"
+                                    aria-placeholder="Select state"
+                                    class="w-full rounded-lg p-3 pe-12 text-sm shadow-sm outline-none border"
+                                >
+                                    <option value="">Please select</option>
+                                    <option value="">Andhra Pradesh</option> <!-- Corrected state name -->
+                                    <option value="">Delhi</option>
+                                </select>
+                            </div>
+                        
+                            <div class="col-span-6 sm:col-span-2"> <!-- Adjusted col-span for each input -->
+                                <input
+                                    type="text"
+                                    inputmode="numeric"
+                                    pattern="[0-9]{4}"
+                                    maxlength="6"
+                                    id="PinCode"
+                                    name="pin"
+                                    placeholder="Pin code"
+                                    class="w-full rounded-lg p-3 pe-12 text-sm shadow-sm outline-none border"
+                                />
+                            </div>
+                        </div>                        
+                    </div>
+
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+    <div></div>
+</div>
+
+{% endblock %}

@@ -29,7 +29,7 @@
     
                     <div>
                       <dt class="inline">Color:</dt>
-                      <dd class="inline">{{item.color}}</dd>
+                      <dd class="inline">{{item.product.color}}</dd>
                     </div>
 
                     <div>
@@ -80,11 +80,6 @@
                     <dd>{{subtotal|floatformat}}</dd>
                   </div>
     
-                  <div class="flex justify-between">
-                    <dt>Delivery charges</dt>
-                    <dd><strike class="mr-2">₹40</strike><span class="text-green-400">Free</span></dd>
-                  </div>
-    
                   <div class="flex justify-between !text-base font-medium">
                     <dt>Total</dt>
                     <dd>₹{{subtotal|floatformat}}</dd>
@@ -93,7 +88,7 @@
     
                 <div class="flex justify-end">
                   <a
-                    href="#"
+                    href="{% url 'address' %}"
                     class="block rounded bg-gray-700 px-5 py-3 text-sm text-gray-100 transition hover:bg-gray-600"
                   >
                     Checkout

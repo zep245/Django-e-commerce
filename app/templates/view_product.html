@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+{% block content %}
+
+{% for item in product_details %}
+    <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-8 mx-4 mt-3">
+        <div class="group block">
+            <div class="relative h-[350px] sm:h-[450px] m-6">
+                <img
+                src="{{item.image.url}}"
+                alt=""
+                class="h-full w-full object-contain"
+                />
+            </div>
+        </div>
+        <div class="">
+            <div class="m-6">
+                <h1 class="text-3xl font-mono">{{item.name}}</h1>
+                <p>Color: {{item.color}}</p>
+                <div class="my-10">
+                    <h3 class="text-lg">Rs. {{item.price}} <br><span class="text-base">Tax included. Shipping calculated at checkout.</span></h3>
+                </div>
+                <hr>
+                <div class="my-7">
+                    <h3 class="text-lg my-2">S I Z E</h3>
+                    <form class="mt-4" method="POST" action="{% url 'add_to_cart' item.id %}">
+                        {% csrf_token %}
+                        <fieldset class="flex flex-wrap gap-3">
+                        
+                            <legend class="sr-only">Size</legend>
+                        
+                            <div>
+                                <input
+                                type="radio"
+                                name="size"
+                                value="S"
+                                id="S"
+                                class="peer hidden"
+                                checked
+                                />
+                            
+                                <label
+                                for="S"
+                                class="flex cursor-pointer items-center justify-center rounded-md border border-gray-100 bg-white px-3 py-2 text-gray-900 hover:border-gray-200 peer-checked:border-gray-900"
+                                >
+                                <p class="text-sm font-medium">S</p>
+                                </label>
+                            </div>
+                        
+                            <div>
+                                <input
+                                type="radio"
+                                name="size"
+                                value="M"
+                                id="M"
+                                class="peer hidden"
+                                />
+                            
+                                <label
+                                for="M"
+                                class="flex cursor-pointer items-center justify-center rounded-md border border-gray-100 bg-white px-3 py-2 text-gray-900 hover:border-gray-200 peer-checked:border-gray-900"
+                                >
+                                <p class="text-sm font-medium">M</p>
+                                </label>
+                            </div>
+
+                            <div>
+                                <input
+                                type="radio"
+                                name="size"
+                                value="L"
+                                id="L"
+                                class="peer hidden"
+                                />
+                            
+                                <label
+                                for="L"
+                                class="flex cursor-pointer items-center justify-center rounded-md border border-gray-100 bg-white px-3 py-2 text-gray-900 hover:border-gray-200 peer-checked:border-gray-900"
+                                >
+                                <p class="text-sm font-medium">L</p>
+                                </label>
+                            </div>
+
+
+                            <div>
+                                <input
+                                type="radio"
+                                name="size"
+                                value="XL"
+                                id="XL"
+                                class="peer hidden"
+                                />
+                            
+                                <label
+                                for="XL"
+                                class="flex cursor-pointer items-center justify-center rounded-md border border-gray-100 bg-white px-3 py-2 text-gray-900 hover:border-gray-200 peer-checked:border-gray-900"
+                                >
+                                <p class="text-sm font-medium">XL</p>
+                                </label>
+                            </div>
+
+                            <div>
+                                <input
+                                type="radio"
+                                name="size"
+                                value="XXL"
+                                id="XXL"
+                                class="peer hidden"
+                                />
+                            
+                                <label
+                                for="XXL"
+                                class="flex cursor-pointer items-center justify-center rounded-md border border-gray-100 bg-white px-3 py-2 text-gray-900 hover:border-gray-200 peer-checked:border-gray-900"
+                                >
+                                <p class="text-sm font-medium">XXL</p>
+                                </label>
+                            </div>
+                        
+                        
+                        
+                        </fieldset>
+
+                    
+                        <div class="my-7">
+                            <h3 class="text-lg my-2">Q U A N T I T Y</h3>
+                            <div>
+                                <label for="Quantity" class="sr-only"> Quantity </label>
+                            
+                                <div class="flex items-center border w-24 border-gray-200 rounded">
+                                <button
+                                    type="button"
+                                    class="w-10 h-10 leading-10 text-gray-600 transition hover:opacity-75"
+                                    onclick="decrementValue()"
+                                >
+                                    &minus;
+                                </button>
+                            
+                                <input
+                                    name="Quantity"
+                                    type="number"
+                                    id="Quantity"
+                                    value="1"
+                                    class="h-10 w-16 border-transparent text-center [-moz-appearance:_textfield] sm:text-sm [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none"
+                                />
+                            
+                                <button
+                                    type="button"
+                                    class="w-10 h-10 leading-10 text-gray-600 transition hover:opacity-75"
+                                    onclick="incrementValue()"
+                                >
+                                    &plus;
+                                </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                            <button
+                            class="block w-full rounded bg-yellow-400 p-4 text-sm font-medium transition hover:scale-105"
+                            >
+                            Add to Cart
+                            </button>
+
+                    </form>
+
+                    
+                </div>
+            </div>
+            
+        </div>
+    </div>
+{% endfor %}
+
+
+
+
+<script>
+    function incrementValue() {
+      const quantityInput = document.getElementById('Quantity');
+      const currentValue = parseInt(quantityInput.value);
+  
+      // Increase value by 1
+      quantityInput.value = currentValue + 1;
+    }
+  
+    function decrementValue() {
+      const quantityInput = document.getElementById('Quantity');
+      const currentValue = parseInt(quantityInput.value);
+  
+      // Decrease value by 1 if it's greater than 1
+      if (currentValue > 1) {
+        quantityInput.value = currentValue - 1;
+      }
+    }
+</script>
+{% endblock %}
