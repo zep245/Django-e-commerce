@@ -9,12 +9,14 @@
                     <p>Have an account? <a href=""  class="underline">Login</a></p>
                 </div>
             <form method="POST">
+                {% csrf_token  %}
                 <div class="my-4">
                     <input 
                         type="email"
                         class="w-full rounded-lg p-3 pe-12 text-sm shadow-sm outline-none border"
                         placeholder="Enter email"
                         required
+                        name="email"
                     >
                 </div>
 
@@ -25,6 +27,7 @@
                         placeholder="Enter phone number"
                         maxlength="10"
                         required
+                        name="tel"
                     >
                 </div>
 
@@ -37,11 +40,11 @@
                             </label>
                           
                             <select
-                              name="HeadlineAct"
-                              id="HeadlineAct"
+                            name="country"  
+                            id="Country"
                               class="w-full rounded-lg p-3 pe-12 text-sm shadow-sm outline-none border"
                             >
-                              <option value="">India</option>
+                              <option value="India">India</option>
                             </select>
                         </div>
 
@@ -82,14 +85,14 @@
                         
                             <div class="col-span-6 sm:col-span-2"> <!-- Adjusted col-span for each input -->
                                 <select
-                                    name="HeadlineAct"
-                                    id="HeadlineAct"
+                                    name="state"
+                                    id="State"
                                     aria-placeholder="Select state"
                                     class="w-full rounded-lg p-3 pe-12 text-sm shadow-sm outline-none border"
                                 >
                                     <option value="">Please select</option>
-                                    <option value="">Andhra Pradesh</option> <!-- Corrected state name -->
-                                    <option value="">Delhi</option>
+                                    <option value="Andhra Pradesh">Andhra Pradesh</option> 
+                                    <option value="Delhi">Delhi</option>
                                 </select>
                             </div>
                         
@@ -97,7 +100,7 @@
                                 <input
                                     type="text"
                                     inputmode="numeric"
-                                    pattern="[0-9]{4}"
+                                    pattern="[0-9]{6}"
                                     maxlength="6"
                                     id="PinCode"
                                     name="pin"

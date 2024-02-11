@@ -19,7 +19,7 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     color = models.CharField(max_length=10 , blank=False)
     image = models.ImageField(upload_to='products/')
-    category = models.ForeignKey(Category, on_delete=models.CASCADE , default="")
+    category = models.ForeignKey(Category, on_delete=models.CASCADE , default="", null=True)
 
     def save(self, *args, **kwargs):
         # Capitalize the color field before saving
@@ -86,26 +86,29 @@ class Customers(models.Model):
 
 
 class Order(models.Model):
-    customer = models.ForeignKey(Customers , on_delete=models.CASCADE)
-    product = models.CharField(max_length=10 ,blank=False , null=False)
-    color = models.CharField(max_length=10 ,blank=False , null=False , default="")
-    size = models.CharField(max_length=10 ,blank=False , null=False , default="")
-    price = models.CharField(max_length=10 ,blank=False , null=False , default="")
-    quantity = models.CharField(max_length=10 ,blank=False , null=False , default="")
-    email = models.EmailField(unique=True , blank=False , null=False)
-    phone_number = models.CharField(max_length=10 ,blank=False , null=False)
-    country = models.CharField(max_length=30 ,blank=False , null=False)
-    first_name = models.CharField(max_length=40 ,blank=False , null=False)
-    last_name = models.CharField(max_length=40 ,blank=False , null=False)
-    city = models.CharField(max_length=40 ,blank=False , null=False)
-    state = models.CharField(max_length=40 ,blank=False , null=False)
-    street = models.CharField(max_length=40 ,blank=False , null=False)
-    pincode = models.CharField(max_length=40 ,blank=False , null=False)
-    payment_type = models.CharField(max_length=40 ,blank=False , null=False)
-
+    customer = models.ForeignKey(Customers, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    color = models.CharField(max_length=10, blank=False, null=False, default="")
+    size = models.CharField(max_length=10, blank=False, null=False, default="")
+    price = models.DecimalField(max_digits=10, decimal_places=2, blank=False, null=False  , default=0)
+    quantity = models.CharField(max_length=10, blank=False, null=False, default="")
+    subtotal = models.DecimalField(max_digits=10, decimal_places=2, blank=False, null=False , default=0)
+    email = models.EmailField(blank=False, null=False)
+    phone_number = models.CharField(max_length=10, blank=False, null=False)
+    country = models.CharField(max_length=30, blank=False, null=False)
+    first_name = models.CharField(max_length=40, blank=False, null=False)
+    last_name = models.CharField(max_length=40, blank=False, null=False)
+    city = models.CharField(max_length=40, blank=False, null=False)
+    state = models.CharField(max_length=40, blank=False, null=False)
+    pincode = models.CharField(max_length=40, blank=False, null=False)
+    payment_type = models.CharField(max_length=40, blank=False, null=False)
+    status = models.BooleanField(default=False)
 
     class Meta:
         verbose_name_plural = "Order"
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
 
     def __str__(self) -> str:
         return f"{self.customer} Ordered {self.product}"

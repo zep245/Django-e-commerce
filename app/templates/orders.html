@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+
+{% for order in orders %}
+<p>Product: {{ order.product }}</p>
+<p>Color: {{ order.color }}</p>
+{% endfor %}
+
+{% endblock %}

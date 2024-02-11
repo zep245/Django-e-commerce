@@ -19,26 +19,26 @@
                 />
     
                 <div>
-                  <h3 class="text-sm text-gray-900">{{item.name}}</h3>
+                  <h3 class="text-sm text-gray-900">{{item.product_name}}</h3>
     
                   <dl class="mt-0.5 space-y-px text-[10px] text-gray-600">
                     <div>
                       <dt class="inline">Size:</dt>
-                      <dd class="inline">{{item.size}}</dd>
+                      <dd class="inline">{{item.product_size}}</dd>
                     </div>
     
                     <div>
                       <dt class="inline">Color:</dt>
-                      <dd class="inline">{{item.product.color}}</dd>
+                      <dd name="color" class="inline">{{item.product_color}}</dd>
                     </div>
 
                     <div>
                       <dt class="inline">Price:</dt>
-                      <dd class="inline">₹{{item.product.price|floatformat}}</dd>
+                      <dd class="inline">₹{{item.product_price|floatformat}}</dd>
                     </div>
                     <div>
                       <dt class="inline">Quantity:</dt>
-                      <dd class="inline">{{item.quantity}}</dd>
+                      <dd class="inline">{{item.product_quantity}}</dd>
                     </div>
                   </dl>
                 </div>
@@ -69,7 +69,7 @@
                 </div>
               </li>
             </ul>
-            {% endfor %}
+            
 
             <div class="mt-8 flex justify-end border-t border-gray-100 pt-8">
               <div class="w-screen max-w-lg space-y-4">
@@ -77,12 +77,12 @@
   
                   <div class="flex justify-between mb-2">
                     <dt>Product({{num_items_in_cart}})</dt>
-                    <dd>{{subtotal|floatformat}}</dd>
+                    <dd>{{item.product_subtotal|floatformat}}</dd>
                   </div>
     
                   <div class="flex justify-between !text-base font-medium">
                     <dt>Total</dt>
-                    <dd>₹{{subtotal|floatformat}}</dd>
+                    <dd name="total_price">₹{{item.product_subtotal|floatformat}}</dd>
                   </div>
                 </dl>
     
@@ -96,6 +96,7 @@
                 </div>
               </div>
             </div>
+            {% endfor %}
           {% else %}
           <h3 class="text-center mt-2 mb-4 font-medium text-4xl text-gray-400 sm:text-2xl">is empty</h3>
           <div class="flex justify-center">
