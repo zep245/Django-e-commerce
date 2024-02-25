@@ -1,12 +1,17 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-8 mt-16">
+    {% for cart in carts %}
     <div>
         <div class="">
             <div class="mx-4">
                 <div class="flex justify-between items-center">
                     <h3 class="text-xl font-bold">Contact</h3>
-                    <p>Have an account? <a href=""  class="underline">Login</a></p>
+                    {% if request.session.customer %}
+                        <p>Need to logout? <a href="{% url  'logout'%}" class="underline">Logout</a></p>
+                    {% else %}
+                        <p>Have an account? <a href="{% url  'login'%}"  class="underline">Login</a></p>
+                    {% endif %}
                 </div>
             <form method="POST">
                 {% csrf_token  %}
@@ -163,9 +168,10 @@
     </div>
     <div>
         <div class="">
-            <p class="text-xl text-black ">Amount payble: {{subtotal}}</p>
+            <p class="text-xl text-black ">Amount payble: {{cart.subtotal}}</p>
         </div>        
     </div>
+    {% endfor %}
 </div>
 
 {% endblock %}

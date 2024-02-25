@@ -6,15 +6,26 @@
     <div class="max-w-4xl mx-auto my-16">
         <div class="flex flex-col items-center justify-center">
             {% if messages %}
-                {% for message in messages %}
-                    <div role="alert" class="rounded border-s-4 border-red-500 bg-red-50 p-4">
-                        <strong class="block font-medium text-red-800"> Something went wrong </strong>
-                    
-                        <p class="mt-2 text-sm text-red-700">
-                            {{message}}
-                        </p>
-                    </div>
-                {% endfor %}
+              {% for message in messages %}
+                {% if message.tags == 'error' %}
+                <div role="alert" class="rounded border-s-4 border-red-500 bg-red-50 p-4">
+                    <strong class="block font-medium text-red-800"> Something went wrong </strong>
+                
+                    <p class="mt-2 text-sm text-red-700">
+                        {{message}}
+                    </p>
+                </div>
+                {% else %}
+                <div role="alert" class="rounded border-s-4 border-green-500 bg-green-200 p-4">
+                    <strong class="block font-medium text-green-800">Success </strong>
+                
+                    <p class="mt-2 text-sm text-green-700">
+                        {{message}}
+                    </p>
+                </div>
+                {% endif %}
+                  
+              {% endfor %}
             {%endif %}
             <h1 class="text-2xl font-semibold my-2">Login</h1>
                 <label

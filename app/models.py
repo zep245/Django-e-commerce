@@ -59,8 +59,6 @@ class ProductSize(models.Model):
 class Customers(models.Model):
     email = models.EmailField(unique=True , blank=False)
     password = models.CharField(max_length=20)
-    otp = models.IntegerField(blank=True, null=True)
-    otp_expiry_time = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         verbose_name_plural = "Customers"
@@ -75,11 +73,6 @@ class Customers(models.Model):
     def set_password(self, raw_password):
         self.password = make_password(raw_password)
 
-    def get_otp_expiry_time(self):
-        return self.otp_expiry_time
-
-    def get_otp(self):
-        return self.otp
 
     def __str__(self):
         return self.email
@@ -103,6 +96,7 @@ class Order(models.Model):
     pincode = models.CharField(max_length=40, blank=False, null=False)
     payment_type = models.CharField(max_length=40, blank=False, null=False)
     status = models.BooleanField(default=False)
+    order_date = models.DateField(auto_now_add=True)
 
     class Meta:
         verbose_name_plural = "Order"

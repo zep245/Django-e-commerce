@@ -10,11 +10,9 @@ urlpatterns = [
     path('register/'  , views.Signup.as_view() , name='register'),
     path('login/' , views.Login.as_view()  , name='login'),
     path('logout/' , views.Logout.as_view()  , name='logout'),
-    path('password_reset/' , views.PasswordReset.as_view()  , name='password_reset'),
-    path('otp/<str:email>/' , views.OtpSystem.as_view()  , name='otp'),
-    path('password_change/<str:email>/' , views.PasswordChange.as_view()  , name='password_change'),
+    path('password_reset/' , views.passwordReset  , name='password_reset'),
+    path('password_change/<str:token>/' , views.passwordChange  , name='password_change'),
     path('address/' , views.ConfirmOrder.as_view()  , name='address'),
-    path("order_success/" , views.Order_success.as_view() , name="order_success" ),
-    path("orders/" , views.ordersPage, name="orders" )
+    path("orders/" , views.Order_page.as_view(), name="orders" )
     
 ]

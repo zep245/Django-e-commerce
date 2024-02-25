@@ -4,17 +4,28 @@
   {% csrf_token %}
   <div class="max-w-4xl mx-auto my-16">
       <div class="flex flex-col items-center justify-center">
-          {% if messages %}
-              {% for message in messages %}
-                  <div role="alert" class="rounded border-s-4 border-red-500 bg-red-50 p-4">
-                      <strong class="block font-medium text-red-800"> Something went wrong </strong>
-                  
-                      <p class="mt-2 text-sm text-red-700">
-                          {{message}}
-                      </p>
-                  </div>
-              {% endfor %}
-          {%endif %}
+        {% if messages %}
+        {% for message in messages %}
+          {% if message.tags == 'error' %}
+          <div role="alert" class="rounded border-s-4 border-red-500 bg-red-50 p-4">
+              <strong class="block font-medium text-red-800"> Something went wrong </strong>
+          
+              <p class="mt-2 text-sm text-red-700">
+                  {{message}}
+              </p>
+          </div>
+          {% else %}
+          <div role="alert" class="rounded border-s-4 border-green-500 bg-green-200 p-4">
+              <strong class="block font-medium text-green-800">Success </strong>
+          
+              <p class="mt-2 text-sm text-green-700">
+                  {{message}}
+              </p>
+          </div>
+          {% endif %}
+            
+        {% endfor %}
+        {%endif %}
           <h1 class="text-2xl font-semibold my-2">Register</h1>
               <label
                   for="email"
@@ -74,7 +85,7 @@
               </label>
               <div>
                 <button   class="inline-block rounded border border-gray-200 px-8 py-2 text-sm font-medium text-gray-700 hover:text-slate-400 focus:outline-none focus:ring active:bg-indigo-500"
-                >Login</button>
+                >Register</button>
               </div>
                    
               <p class="text-sm text-gray-500 mt-2">

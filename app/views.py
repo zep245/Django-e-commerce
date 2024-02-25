@@ -5,13 +5,12 @@ from django.contrib.auth.hashers import make_password , check_password
 from .models import Customers
 from django.contrib import messages
 from .login_required import login_required
-from .otp import generate_otp
-import pytz
-from datetime import datetime, timedelta
 from django.core.mail import send_mail
 from django.conf import settings
 from django.utils.decorators import method_decorator
 from .models import Order
+from .utils import password_reset_token_generator
+from django.urls import reverse
 
 def home(request):
     product = Product.objects.all()
@@ -26,6 +25,7 @@ def view_product(request):
 
     context = {
         'product_details' : view_product_details,
+        'title':'Products',
     }
     return render(request , 'view_product.html' , context)
 
@@ -33,7 +33,7 @@ def view_product(request):
 
 class Add_to_cart(View):
     def get(self , request):
-        return render(request , "view_product.html" )
+        return render(request , "view_product.html")
     
     def post(self , request , product_id):
         subtotal = 0
@@ -103,7 +103,7 @@ class View_cart(View):
         'cart': cart_items,
         }
         
-        return render(request , "cart.html" , context)
+        return render(request , "cart.html" , context , {'title':'Cart'})
     
         
 
@@ -121,7 +121,7 @@ def remove_from_cart(request, product_id):
 
 class Signup(View):
     def get(self , request):
-        return render(request , 'register.html')
+        return render(request , 'register.html' , {'title':'Register'})
 
 
     def post(self , request):
@@ -154,7 +154,7 @@ class Signup(View):
 class Login(View):
 
     def get(self , request):
-        return render(request , 'login.html')
+        return render(request , 'login.html' , {'title':'Login'})
     
     def post(self, request):
         email = request.POST.get('email')
@@ -182,132 +182,74 @@ class Logout(View):
 
 
 
-class PasswordReset(View):
-    def get(self, request):
-        return render(request, 'password_reset.html')
 
-    def post(self, request):
-        email = request.POST.get("password_reset_email")
-        customer = Customers.get_customer_by_email(email)
-
-        if customer:
-            otp = generate_otp()
-            print(otp)
-            customer.otp = otp
-            ist = pytz.timezone('Asia/Kolkata')
-            customer.otp_expiry_time = datetime.now(ist) + timedelta(seconds=60)  # Set OTP expiry time (adjust as needed)
-            
-            customer.save()
-
-            # Send OTP to the user (e.g., via email or SMS)
-            subject = "Password reset"
-            message = f"Your otp is {otp}. this otp expiry 1 minute"
+def passwordReset(request):
+    if request.method == 'POST':
+        email = request.POST.get('password_reset_email')
+        user = Customers.objects.filter(email=email).first()
+        if user:
+            token = password_reset_token_generator.generate_token(user)
+            reset_link = settings.BASE_URL + reverse('password_change' , kwargs={'token':token})
+        
+            # send by email
+            subject = 'Password Reset'
+            message = f'Please click the following link to reset your password:\n{reset_link}'
             from_email = settings.EMAIL_HOST_USER
-            recipient_list = [customer.email]
+            recipient_list = [user.email]
 
             send_mail(subject, message, from_email, recipient_list, fail_silently=False)
-
-            return redirect("otp", email=email)
-        else:
-            messages.error(request, "The email is not found")
+            messages.success(request , "Password reset link sent to your email.")
             return redirect("password_reset")
-
-
-
-class OtpSystem(View):
-    def get(self, request, email=None):
-        if email:
-            return render(request, 'otp.html', {'email': email})
         else:
-            messages.error(request, 'Email parameter is missing.')
-            return redirect('password_reset')
+            messages.error(request, 'No user found with that email.')
+    return render(request , "password_reset.html" , {'title':'Password reset'})
+        
+        
+    
 
-    def post(self, request , email=None):
-        if not email:
-            messages.error(request, 'Email parameter is missing.')
-            return redirect('password_reset')
 
-        customer = Customers.get_customer_by_email(email)
-
-        if not customer:
-            messages.error(request, 'Invalid email or user does not exist.')
-            return redirect('password_reset')
-
-        otp_values = [
-            request.POST.get('otp1'),
-            request.POST.get('otp2'),
-            request.POST.get('otp3'),
-            request.POST.get('otp4'),
-            request.POST.get('otp5'),
-            request.POST.get('otp6'),
-        ]
-
-        if None in otp_values or '' in otp_values:
-            messages.error(request, 'Please enter the complete OTP')
-            return render(request, 'otp.html', {'email': email})
+def passwordChange(request, token):
+    user_id = password_reset_token_generator.validate_token(token)
+    if user_id:
+        user = Customers.objects.filter(id=user_id).first()
+        if user:
+            if request.method == "POST":
+                new_password = request.POST.get('new_password')
+                retype_password = request.POST.get('retype_password')
+                if new_password == retype_password:
+                    user.set_password(new_password)
+                    user.save()
+                    messages.success(request, 'Password changed successfully. You can now log in with your new password.')
+                    return redirect("login")
+                else:
+                    messages.error(request, "Passwords do not match.")
+            return render(request, 'password_change.html', {'token': token})
         else:
-            user_otp = ''.join(otp_values)
+            messages.error(request, "No user found!")
+            return redirect("password_reset")
+    else:
+        messages.error(request, "Invalid token.")
+        return redirect("password_reset" , {'title':'Password change'})
 
-        customer_otp_expiry_time_utc = customer.otp_expiry_time.replace(tzinfo=pytz.UTC)
 
-        # Convert customer.otp_expiry_time_utc to IST
-        ist = pytz.timezone('Asia/Kolkata')
-        customer_otp_expiry_time_ist = customer_otp_expiry_time_utc.astimezone(ist)
+        
 
-        if customer.otp == int(user_otp) and customer_otp_expiry_time_ist > datetime.now(ist):
-            messages.success(request, "Success")
-            # Clear the OTP information from the database
-            return redirect("password_change", email=email)
-        else:
-            messages.error(request, "Wrong or expired OTP")
-            return render(request, 'otp.html', {'email': email})
+
+   
 
 
 
-class PasswordChange(View):
-    def get(self, request, email):
-        customer = Customers.get_customer_by_email(email)
 
-        # Check if the OTP verification process has been completed
-        if customer and customer.otp is not None and customer.otp_expiry_time is not None:
-            return render(request, 'password_change.html', {'email': email})
-        else:
-            messages.error(request, 'Unauthorized access. Please complete the OTP verification first.')
-            return redirect('password_reset')
-
-    def post(self, request, email):
-        customer = Customers.get_customer_by_email(email)
-
-        if not customer:
-            messages.error(request, 'Invalid email or user does not exist.')
-            return redirect('password_reset')
-
-        new_password = request.POST.get('new_password')
-        retype_password = request.POST.get('retype_password')
-
-        if new_password == retype_password:
-            # Check if the OTP verification process has been completed
-            if customer.otp is None and customer.otp_expiry_time is None:
-                # Update the password in the database
-                customer.set_password(new_password)
-                customer.otp = None
-                customer.otp_expiry_time = None
-                customer.save()
-                messages.success(request, 'Password changed successfully. You can now log in with your new password.')
-                return redirect('login')
-            else:
-                messages.error(request, 'Unauthorized access. Please complete the OTP verification first.')
-                return redirect('password_reset')
-        else:
-            messages.error(request, 'Passwords do not match.')
-            return render(request, 'password_change.html', {'email': email})
             
 
 
 @method_decorator(login_required(login_url="login") , name="dispatch")
 class ConfirmOrder(View):
     def get(self , request):
-        return render(request , "address.html")
+        cart = {
+            'carts':request.session.get("cart", [])
+        }
+        return render(request , "address.html" , cart , {'title':'Address'})
     
     def post(self , request):
 
@@ -360,26 +302,26 @@ class ConfirmOrder(View):
             )
 
 
-        return redirect("order_success")
+        return render(request , "order_success.html")
        
 
-class Order_success(View):
-    def get(self, request):
-        return render(request , "order_success.html")
+
+        
     
 
 
-def ordersPage(request):
-    customer_id = request.session.get("customer")
-    if customer_id:
-            customer = Customers.objects.get(id=customer_id)
-            if customer:
+
+
+class Order_page(View):
+    def get(self ,request):
+        customer_id = request.session.get("customer")
+        if customer_id:
+                customer = Customers.objects.get(id=customer_id)
                 order = Order.objects.filter(customer=customer)
                 context = {'orders': order}
-            else:
-                messages.error(request ,"error_message': 'Order not found for this customer" )
-    else:
-        messages.error(request ,"error_message': 'Order not found for this customer" )
-    return render(request, "orders.html", context)
+        else:
+            return redirect("login")
+        return render(request, "orders.html", context , {'title':'Orders'})
+
     
    
