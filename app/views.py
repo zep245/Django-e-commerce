@@ -251,9 +251,10 @@ def passwordChange(request, token):
 class ConfirmOrder(View):
     def get(self , request):
         cart = {
-            'carts':request.session.get("cart", [])
+            'carts':request.session.get("cart", []),
+            'title':'Address',
         }
-        return render(request , "address.html" , cart , {'title':'Address'})
+        return render(request , "address.html" , cart )
     
     def post(self , request):
 
