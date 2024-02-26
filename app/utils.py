@@ -1,5 +1,6 @@
 from itsdangerous import URLSafeTimedSerializer
 from django.conf import settings
+import time
 
 
 
@@ -8,11 +9,12 @@ class PasswordResetTokenGenerator:
         self.serializer = URLSafeTimedSerializer(settings.SECRET_KEY)
 
     def generate_token(self, user):
+        print(time.time())
         return self.serializer.dumps(user.id)
 
     def validate_token(self, token):
         try:
-            user_id = self.serializer.loads(token)
+            user_id = self.serializer.loads(token , max_age=120)  
             return user_id
         except Exception as e:
             return None

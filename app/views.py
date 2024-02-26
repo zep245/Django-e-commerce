@@ -209,27 +209,30 @@ def passwordReset(request):
 
 
 def passwordChange(request, token):
-    user_id = password_reset_token_generator.validate_token(token)
-    if user_id:
-        user = Customers.objects.filter(id=user_id).first()
-        if user:
-            if request.method == "POST":
-                new_password = request.POST.get('new_password')
-                retype_password = request.POST.get('retype_password')
-                if new_password == retype_password:
-                    user.set_password(new_password)
-                    user.save()
-                    messages.success(request, 'Password changed successfully. You can now log in with your new password.')
-                    return redirect("login")
-                else:
-                    messages.error(request, "Passwords do not match.")
-            return render(request, 'password_change.html', {'token': token})
-        else:
-            messages.error(request, "No user found!")
-            return redirect("password_reset")
-    else:
-        messages.error(request, "Invalid token.")
+    try:
+        user_id = password_reset_token_generator.validate_token(token)
+        if user_id:
+            user = Customers.objects.filter(id=user_id).first()
+            if user:
+                if request.method == "POST":
+                    new_password = request.POST.get('new_password')
+                    retype_password = request.POST.get('retype_password')
+                    if new_password == retype_password:
+                        user.set_password(new_password)
+                        user.save()
+                        messages.success(request, 'Password changed successfully. You can now log in with your new password.')
+                        return redirect("login")
+                    else:
+                        messages.error(request, "Passwords do not match.")
+                return render(request, 'password_change.html', {'token': token})
+            else:
+                messages.error(request, "No user found!")
+                return redirect("password_reset")
         return redirect("password_reset" , {'title':'Password change'})
+    except:
+        messages.error(request , "This link is expire please re generate")
+        return redirect("password_reset")
+        
 
 
         
