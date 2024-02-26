@@ -101,9 +101,10 @@ class View_cart(View):
             )
         context = {
         'cart': cart_items,
+        'title':'Cart',
         }
         
-        return render(request , "cart.html" , context , {'title':'Cart'})
+        return render(request , "cart.html" , context)
     
         
 

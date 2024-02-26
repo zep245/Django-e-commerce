@@ -15,15 +15,23 @@ class Category(models.Model):
         return self.name
 
 class Product(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255 , blank=False , null=False , unique=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    color = models.CharField(max_length=10 , blank=False)
+    color = models.CharField(max_length=100 , blank=False)
     image = models.ImageField(upload_to='products/')
     category = models.ForeignKey(Category, on_delete=models.CASCADE , default="", null=True)
-
+ 
     def save(self, *args, **kwargs):
         # Capitalize the color field before saving
         self.color = self.color.capitalize()
+        if self.pk is None:  # Check if the instance is being created (not updated)
+            try:
+                # Check if an image with the same path already exists
+                existing_product = Product.objects.exclude(pk=self.pk).get(image=self.image)
+                self.image = existing_product.image  # Use existing image
+            except Product.DoesNotExist:
+                pass  # Image doesn't exist, proceed normally
+        
         super(Product, self).save(*args, **kwargs)
 
     class Meta:
