@@ -32,6 +32,9 @@
 
 
 ## Installation
+Make sure change this values in __Settings.py__
+![Screenshot 2024-02-26 112035](https://github.com/zep245/E-commerce-Webapp/assets/72607551/c409af31-83d3-47cb-9c0d-a7315925420a)
+
 [Provide steps or commands to clone, set up dependencies, and run the project locally.]
 
 
