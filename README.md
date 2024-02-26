@@ -27,7 +27,7 @@
 
 * __Django__: Backend framework for building web applications.
 * __HTML/TailwindCSS__: Frontend markup and styling.
-* __Database__: Utilizing Django ORM with [Specify Your Database System.
+* __Database__: Utilizing Django ORM with SQLite.
 * __Javascript__: Enhancing user interactions and dynamic functionalities.
 
 
